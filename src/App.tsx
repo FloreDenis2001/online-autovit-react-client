@@ -1,30 +1,16 @@
-import React, { useState } from 'react';
-
-function App() {
-
-  const [val,setVal]=useState(0);//initializam variabila
-
-  let x=7;
-
-  let test=()=>{
-
-      x++;
-
-      setVal(val+1);      
 
 
-      console.table(x);
-      console.table(val);
-  }
+
+import Home from "./components/Home/Home";
+
+
+function App(){
 
   return (
-    <div className="App">
-      <p>Fara {x}</p>
-      <p>State {val}</p>
+    <Home/>
+  )
 
-      <button onClick={test}>Test</button>
-    </div>
-  );
 }
 
-export default App;
+
+export  default App;
