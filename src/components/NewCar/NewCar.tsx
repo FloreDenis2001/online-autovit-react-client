@@ -91,7 +91,7 @@ const NewCar: React.FC = () => {
                 </p>
 
                 <p>
-                    <input type="button" value="Create New Car" onClick={addCar} />
+                    <input type="button" value="Create New Car"  onClick={addCar}/>
                 </p>
                 <p>
                     <a className='button' href=''>Cancel</a>

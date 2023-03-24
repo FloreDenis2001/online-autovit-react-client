@@ -43,19 +43,36 @@ class ServiceCar {
           message: data.statusText,
           ...data
         }
+        console.log(data.statusText);
         return response
       }
 
       throw new Error(data.statusText);
 
     } catch (err) {
-
       let response: HttpResponse<Masina> = {
         data: null,
-        message: data.statusText,
+        message:data.statusText,
         ...data
       }
+   
       return response
+    }
+
+  }
+
+  updateCar= async(masina:Masina)=>{
+     
+    try{
+      let data = await this.api<Masina>("/masini/update", "PUT", masina, "");
+      if(data.status===200){
+        let car = data.json();
+        return car;
+      }else {
+        throw new Error(data.statusText);
+      }
+    }catch(e){
+      throw new Error("Wrong fetch !");
     }
 
   }
