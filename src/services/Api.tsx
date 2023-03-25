@@ -52,30 +52,48 @@ class ServiceCar {
     } catch (err) {
       let response: HttpResponse<Masina> = {
         data: null,
-        message:data.statusText,
+        message: data.statusText,
         ...data
       }
-   
+
       return response
     }
 
   }
 
-  updateCar= async(masina:Masina)=>{
-     
-    try{
+  updateCar = async (masina: Masina) => {
+
+    try {
       let data = await this.api<Masina>("/masini/update", "PUT", masina, "");
-      if(data.status===200){
+      if (data.status === 200) {
         let car = data.json();
         return car;
-      }else {
+      } else {
         throw new Error(data.statusText);
       }
-    }catch(e){
+    } catch (e) {
       throw new Error("Wrong fetch !");
     }
 
   }
+
+
+
+  deleteCar = async (masina: Masina) => {
+
+    try {
+      let data = await this.api<Masina>("/masini/"+masina.model,"DELETE",masina,"");
+      if (data.status === 200) {
+       alert("Masina a fost stearsa")
+      } else {
+        throw new Error(data.statusText);
+      }
+    } catch (e) {
+      throw new Error("Wrong fetch !");
+    }
+
+  }
+
 
 }
 
