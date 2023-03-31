@@ -97,8 +97,8 @@ class ServiceCar {
   }
 
 
-  findCarById = async (number:Number) => {
-    let data = await this.api<null, Masina>("/masini/" + number,"GET",null, "");
+  findCarById = async (id:String):Promise<HttpResponse<Masina>>=> {
+    let data = await this.api<null, Masina>("/masini/findById/" +id,"GET",null, "");
 
     try {
       if (data.status === 200) {

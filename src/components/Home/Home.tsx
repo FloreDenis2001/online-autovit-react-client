@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Masina from '../../models/Masina';
 import ServiceCar from "../../services/Api";
 import { Car } from './Car/Car';
@@ -8,6 +9,8 @@ const Home: React.FC = () => {
 
 
     let [cars,setCars]=useState(Array<Masina>);
+
+    let navigate=useNavigate();
 
     useEffect(() => {
         getAllCars();
@@ -23,6 +26,12 @@ const Home: React.FC = () => {
         setCars(data);
     }
 
+    let add=()=>{
+
+
+         navigate("/add");
+    }
+
 
     return (
         <>
@@ -31,7 +40,7 @@ const Home: React.FC = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        {/* <th>Id</th> */}
                         <th>Marca</th>
                         <th>Model</th>
                         <th>Culoare</th>
@@ -41,11 +50,14 @@ const Home: React.FC = () => {
                 <tbody>
                     {
                         cars.map(car=>{
-                            return <Car car={car}/>
+                            return <Car car={car} key={car.id}/>
                         })
+                        
                     }
                 </tbody>
             </table>
+
+            <button type='button' onClick={add}>Add Car</button>
         </>
     )
 }

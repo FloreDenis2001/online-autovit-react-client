@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import { getValue } from '@testing-library/user-event/dist/utils';
+import { Result } from 'antd';
+import React, { useState, useEffect, useMemo } from 'react'
+import { useParams } from 'react-router-dom';
 import Masina from "../../models/Masina"
 import ServiceCar from "../../services/Api"
 
@@ -10,21 +13,26 @@ const UpdateCar = () => {
     const [marca, setMarca] = useState("");
     const [culoare, setCuloare] = useState("");
     const [anul, setAnul] = useState(0);
-    let id = 35;
-    let findCarById=serviceCar.findCarById(id);
-    console.log(findCarById);
-    const [car, setCar] = useState({
-        an:0,
-        culoare: "",
-        marca: "",
-        model: ""
-    }as Masina);
-  
+    let { id } = useParams();
+
+
+    const [car, setCar] = useState(Object);
+
 
 
     useEffect(() => {
-    
+
+
+        findById();
+
+    }, []);
+
+
+
+
+    useEffect(() => {
         let masina = {
+            id: car.id,
             an: anul,
             culoare: culoare,
             marca: marca,
@@ -46,6 +54,16 @@ const UpdateCar = () => {
     let deleteCar = async () => {
         let res = await serviceCar.deleteCar(car);
         console.log(res);
+    }
+
+    let findById = async () => {
+
+        if (id) {
+            let findByIdCar = await serviceCar.findCarById(id);
+            console.log(findByIdCar);
+            setCar(findByIdCar);
+        }
+
     }
 
     return (
@@ -77,14 +95,14 @@ const UpdateCar = () => {
                     } />
                 </p>
                 <p>
-                    <input type="submit" value="Update Car" onClick={updateCar} />
+                    <input type="button" value="Update Car" onClick={updateCar} />
                 </p>
             </form>
 
             <p>
                 <a className="button">Cancel</a>
             </p>
-            <p><input type="submit" value="Delete Car" onClick={deleteCar} /></p>
+            <p><input type="button" value="Delete Car" onClick={deleteCar} /></p>
 
 
         </>
