@@ -3,15 +3,17 @@ import HttpResponse from "../models/HttpResponse";
 import Masina from "../models/Masina";
 
 
+
 class ServiceCar {
 
-  api<U>(path: string, method: string, body: U, token: string): Promise<Response> {
+  api<U, T>(path: string, method: string, body: U, token: string): Promise<HttpResponse<T>> {
     const url = "http://localhost:8080/api/v1" + path;
     const options: RequestInit = {
       method,
       headers: {
         "Content-Type": "application/json;charset=utf-8",
         Authentification: `Bearer${token}`,
+        method: "no-cors"
       },
       body: body == null ? null : JSON.stringify(body),
     };
@@ -20,8 +22,8 @@ class ServiceCar {
   }
 
   getAllCars = async (): Promise<Masina[]> => {
-    let data = await this.api<null>("/masini/all", "GET", null, "");
-    if (data.status == 200) {
+    let data = await this.api<null, Masina[]>("/masini/all", "GET", null, "");
+    if (data.status === 200) {
       let cars = await data.json();
       return cars;
     } else {
@@ -32,65 +34,87 @@ class ServiceCar {
   }
 
 
-  addCar = async (masina: Masina) => {
-    let data = await this.api<Masina>("/masini/add", "POST", masina, "");
+  addCar = async (masina: Masina): Promise<HttpResponse<Masina>> => {
+    let data = await this.api<Masina, Masina>("/masini/add", "POST", masina, "");
+
+
 
     try {
+
       if (data.status === 201) {
-        let car = await data.json();
-        let response: HttpResponse<Masina> = {
-          data: car,
-          message: data.statusText,
-          ...data
-        }
-        console.log(data.statusText);
-        return response
+        let addedcar = await data.json();
+        return addedcar
       }
 
-      throw new Error(data.statusText);
+
+      throw new Error("error");
 
     } catch (err) {
-      let response: HttpResponse<Masina> = {
-        data: null,
-        message: data.statusText,
-        ...data
-      }
 
-      return response
+      return {
+        ...data,
+        message: "Wrong fetch !"
+      }
     }
 
   }
 
-  updateCar = async (masina: Masina) => {
-
+  updateCar = async (masina: Masina): Promise<HttpResponse<Masina>> => {
+    let data = await this.api<Masina, Masina>("/masini/update", "PUT", masina, "");
     try {
-      let data = await this.api<Masina>("/masini/update", "PUT", masina, "");
       if (data.status === 200) {
         let car = data.json();
         return car;
       } else {
-        throw new Error(data.statusText);
+        throw new Error("Masina nu exista!");
       }
     } catch (e) {
-      throw new Error("Wrong fetch !");
-    }
 
+      return {
+        ...data,
+        message: "Wrong fetch !"
+      }
+    }
   }
 
 
 
   deleteCar = async (masina: Masina) => {
-
+    let data = await this.api<Masina, Masina>("/masini/" + masina.model, "DELETE", masina, "");
     try {
-      let data = await this.api<Masina>("/masini/"+masina.model,"DELETE",masina,"");
       if (data.status === 200) {
-       alert("Masina a fost stearsa")
+        alert("Masina a fost stearsa");
       } else {
-        throw new Error(data.statusText);
+        throw new Error("Masina nu exista !");
       }
     } catch (e) {
-      throw new Error("Wrong fetch !");
+      return {
+        ...data,
+        message: "Wrong fetch !"
+      }
     }
+
+  }
+
+
+  findCarById = async (number:Number) => {
+    let data = await this.api<null, Masina>("/masini/" + number,"GET",null, "");
+
+    try {
+      if (data.status === 200) {
+        let car = data.json();
+        return car;
+      } else {
+        throw new Error("Masina nu exista !");
+      }
+
+    } catch (err) {
+      return {
+        ...data,
+        message: "Wrong fetch !"
+      }
+    }
+
 
   }
 

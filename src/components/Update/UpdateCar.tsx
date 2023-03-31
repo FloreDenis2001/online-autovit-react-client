@@ -10,22 +10,25 @@ const UpdateCar = () => {
     const [marca, setMarca] = useState("");
     const [culoare, setCuloare] = useState("");
     const [anul, setAnul] = useState(0);
-
+    let id = 35;
+    let findCarById=serviceCar.findCarById(id);
+    console.log(findCarById);
     const [car, setCar] = useState({
-        an: 0,
+        an:0,
         culoare: "",
         marca: "",
-        model: "S"
-    } as Masina);
+        model: ""
+    }as Masina);
+  
 
 
     useEffect(() => {
-
+    
         let masina = {
             an: anul,
             culoare: culoare,
             marca: marca,
-            model: "S"
+            model: car.model
         } as Masina;
 
         setCar(masina);
