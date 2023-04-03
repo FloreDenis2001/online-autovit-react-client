@@ -1,7 +1,7 @@
 
 import HttpResponse from "../models/HttpResponse";
 import Masina from "../models/Masina";
-
+import { Alert } from 'antd';
 
 
 class ServiceCar {
@@ -78,12 +78,16 @@ class ServiceCar {
   }
 
 
+ 
+  
+
+  
 
   deleteCar = async (masina: Masina) => {
     let data = await this.api<Masina, Masina>("/masini/" + masina.model, "DELETE", masina, "");
     try {
       if (data.status === 200) {
-        alert("Masina a fost stearsa");
+        return  masina;
       } else {
         throw new Error("Masina nu exista !");
       }
