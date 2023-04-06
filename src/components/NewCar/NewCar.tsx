@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Masina from "../../models/Masina"
 import ServiceCar from "../../services/Api"
-
 import { Alert, Space } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { successNotification,errorNotification } from '../Notifications/notifications';
 
 const NewCar: React.FC = () => {
 
@@ -16,7 +17,11 @@ const NewCar: React.FC = () => {
 
     const [errMessage, setErrMessage] = useState("Eroareeee");
 
+    const [errors, setErrors] = useState([""])
 
+
+    const [isAdded, setAdded] = useState(false);
+    let navigate = useNavigate();
 
 
     const [car, setCar] = useState({
@@ -29,36 +34,82 @@ const NewCar: React.FC = () => {
 
     let addCar = async () => {
 
+        checkErros();
+
+
+        if(errors.length==0){
 
         let response = await serviceCar.addCar(car);
-        console.log(response);
+        setAdded(true);
+        setTimeout(() => {
+            navigate("/")
+        }, 2500);
 
 
+            successNotification("A fost adaugat","masina","topRight");
+
+        }else{
+
+
+            errors.forEach((err)=>{
+
+
+                errorNotification(err,"eroare","topRight");
+
+            })
+        }
+
+
+    }
+
+
+
+
+    let checkErros = () => {
+
+        let messages = [];
+        setErrors([]);
+
+        if (marca ==="") {
+
+            messages.push("Trebuie sa introduceti marca");
+
+        } 
+         if (model === "") {
+            messages.push("Trebuie sa introduceti modelul")
+        } 
+        if (anul === 0) {
+            messages.push("Anul trebuie sa fie mai mare decat 1854");
+        } 
+         if (culoare === "") {
+            messages.push("Trebuie sa introduceti culoarea");
+        }
+
+        setErrors(messages);
     }
 
 
 
     useEffect(() => {
 
+        checkErros();
         let masina = {
             an: anul,
             culoare: culoare,
             marca: marca,
             model: model
         } as Masina;
-
-
-
         setCar(masina);
         console.table(car);
 
 
     }, [marca, model, culoare, anul]);
 
-    let checkValid = () => {
-        setErr(!(model !== "" && marca !== "" && culoare !== "" && anul !== 0));
-
+   
+    let goHome = (): void => {
+        navigate("/");
     }
+
 
     return (
 
@@ -91,23 +142,13 @@ const NewCar: React.FC = () => {
                 </p>
 
                 <p>
-                    <input type="button" value="Create New Car"  onClick={addCar}/>
+                    <input type="button" value="Create New Car" onClick={addCar} />
                 </p>
                 <p>
-                    <a className='button' href=''>Cancel</a>
+                    <a className='button' href='' onClick={goHome}>Cancel</a>
                 </p>
             </form>
 
-
-            <div>
-                {
-
-                    err && <Alert message={errMessage} type="error" />
-
-                }
-            </div>
-
-            <p> {"ceva " + err}</p>
 
         </>
     )

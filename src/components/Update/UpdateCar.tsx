@@ -1,9 +1,11 @@
 import { getValue } from '@testing-library/user-event/dist/utils';
 import { Result } from 'antd';
 import React, { useState, useEffect, useMemo } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Masina from "../../models/Masina"
 import ServiceCar from "../../services/Api"
+import { Alert } from 'antd';
+import { successNotification,errorNotification } from '../Notifications/notifications';
 
 
 const UpdateCar = () => {
@@ -13,12 +15,13 @@ const UpdateCar = () => {
     const [marca, setMarca] = useState("");
     const [culoare, setCuloare] = useState("");
     const [anul, setAnul] = useState(0);
+
     let { id } = useParams();
 
-
+    let navigate = useNavigate();
     const [car, setCar] = useState(Object);
 
-
+   let [errors,setErrors]=useState([""]);
 
     useEffect(() => {
 
@@ -28,9 +31,26 @@ const UpdateCar = () => {
     }, []);
 
 
+    let checkErros = () => {
 
+        let messages = [];
+        setErrors([]);
+
+        if (marca ==="") {
+            messages.push("Trebuie sa introduceti marca");
+        }
+        if (anul === 0) {
+            messages.push("Anul trebuie sa fie mai mare decat 1854");
+        } 
+         if (culoare === "") {
+            messages.push("Trebuie sa introduceti culoarea");
+        }
+
+        setErrors(messages);
+    }
 
     useEffect(() => {
+        checkErros();
         let masina = {
             id: car.id,
             an: anul,
@@ -47,13 +67,32 @@ const UpdateCar = () => {
 
 
     let updateCar = async () => {
+        checkErros();
+
+        if(errors.length==0){
         let response = await serviceCar.updateCar(car);
-        console.log(response);
+        setTimeout(() => {
+            navigate("/");
+        }, 2500)
+
+        successNotification("Updated","masina","topRight");
+        }else {
+            errors.forEach((err)=>{
+                errorNotification(err,"erroare","topRight");
+            })
+        }
     }
 
     let deleteCar = async () => {
+
         let res = await serviceCar.deleteCar(car);
-        console.log(res);
+        if (res != null) {
+        }
+
+        setTimeout(() => {
+            navigate("/");
+        }, 2500)
+
     }
 
     let findById = async () => {
@@ -66,6 +105,10 @@ const UpdateCar = () => {
 
     }
 
+    let goHome = (): void => {
+        navigate("/");
+    }
+
     return (
         <>
             <h1>Update Car</h1>
@@ -73,6 +116,7 @@ const UpdateCar = () => {
                 <p>
                     <label htmlFor="marca">Marca</label>
                     <input name="marca" type="text" id="marca" value={marca} onChange={(e) => {
+                        e.preventDefault();
                         setMarca(e.target.value);
                     }
 
@@ -81,6 +125,7 @@ const UpdateCar = () => {
                 <p>
                     <label htmlFor="color">Culoare</label>
                     <input name="color" type="text" id="color" value={culoare} onChange={(e) => {
+                         e.preventDefault();
                         setCuloare(e.target.value);
                     }
 
@@ -89,6 +134,7 @@ const UpdateCar = () => {
                 <p>
                     <label htmlFor="year">Anul</label>
                     <input name="year" type="text" id="year" value={anul} onChange={(e) => {
+                         e.preventDefault();
                         setAnul(+e.target.value);
                     }
 
@@ -100,9 +146,10 @@ const UpdateCar = () => {
             </form>
 
             <p>
-                <a className="button">Cancel</a>
+                <a className="button" onClick={goHome}>Cancel</a>
             </p>
             <p><input type="button" value="Delete Car" onClick={deleteCar} /></p>
+
 
 
         </>
