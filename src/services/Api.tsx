@@ -84,7 +84,8 @@ class ServiceCar {
   
 
   deleteCar = async (masina: Masina) => {
-    let data = await this.api<Masina, Masina>("/masini/" + masina.model, "DELETE", masina, "");
+    console.log(masina);
+    let data = await this.api<Masina, Masina>("/masini/removebyid/" + masina.id, "DELETE", masina, "");
     try {
       if (data.status === 200) {
         return  masina;
@@ -101,10 +102,10 @@ class ServiceCar {
   }
 
 
-  findCarById = async (id:String):Promise<HttpResponse<Masina>>=> {
+  findCarById = async (id:String):Promise<Masina>=> {
     let data = await this.api<null, Masina>("/masini/findById/" +id,"GET",null, "");
 
-    try {
+
       if (data.status === 200) {
         let car = data.json();
         return car;
@@ -112,12 +113,7 @@ class ServiceCar {
         throw new Error("Masina nu exista !");
       }
 
-    } catch (err) {
-      return {
-        ...data,
-        message: "Wrong fetch !"
-      }
-    }
+   
 
 
   }
