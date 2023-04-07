@@ -4,6 +4,7 @@ import ServiceCar from "../../services/Api"
 import { Alert, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { successNotification,errorNotification } from '../Notifications/notifications';
+import { setConstantValue } from 'typescript';
 
 const NewCar: React.FC = () => {
 
@@ -13,9 +14,6 @@ const NewCar: React.FC = () => {
     const [culoare, setCuloare] = useState("");
     const [anul, setAnul] = useState(0);
 
-    const [err, setErr] = useState(false);
-
-    const [errMessage, setErrMessage] = useState("Eroareeee");
 
     const [errors, setErrors] = useState([""])
 
@@ -25,7 +23,7 @@ const NewCar: React.FC = () => {
 
 
     const [car, setCar] = useState({
-        an: 0,
+        an: 1864,
         culoare: "",
         marca: "",
         model: ""
@@ -39,7 +37,7 @@ const NewCar: React.FC = () => {
 
         if(errors.length==0){
 
-        let response = await serviceCar.addCar(car);
+        await serviceCar.addCar(car);
         setAdded(true);
         setTimeout(() => {
             navigate("/")
@@ -136,7 +134,7 @@ const NewCar: React.FC = () => {
                 </p>
                 <p>
                     <label htmlFor="Anul">Anul : </label>
-                    <input name="anul" type="number" id="Anul" value={anul} onChange={(e) => {
+                    <input name="anul" type="number" id="Anul" min={1864} value={anul} onChange={(e) => {
                         setAnul(+e.target.value);
                     }} />
                 </p>

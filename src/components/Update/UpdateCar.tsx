@@ -51,26 +51,31 @@ const UpdateCar = () => {
 
     useEffect(() => {
         checkErros();
-        let masina = {
+
+        let masina : Masina = {
+            ...car,
             id: car.id,
-            an: anul,
-            culoare: culoare,
-            marca: marca,
+            marca: marca !== '' ? marca : undefined,
+            culoare: culoare !== '' ? culoare : undefined,
+            an: anul !== 0 ? anul : undefined,
             model: car.model
-        } as Masina;
+        };
+     
 
         setCar(masina);
+        
         console.table(car);
 
 
     }, [marca, culoare, anul]);
 
 
+
     let updateCar = async () => {
         checkErros();
 
         if(errors.length==0){
-        let response = await serviceCar.updateCar(car);
+        await serviceCar.updateCar(car);
         setTimeout(() => {
             navigate("/");
         }, 2500)
@@ -115,7 +120,7 @@ const UpdateCar = () => {
             <form>
                 <p>
                     <label htmlFor="marca">Marca</label>
-                    <input name="marca" type="text" id="marca" value={marca} onChange={(e) => {
+                    <input name="marca" type="text" id="marca" value={car.marca} onChange={(e) => {
                         e.preventDefault();
                         setMarca(e.target.value);
                     }
@@ -124,7 +129,7 @@ const UpdateCar = () => {
                 </p>
                 <p>
                     <label htmlFor="color">Culoare</label>
-                    <input name="color" type="text" id="color" value={culoare} onChange={(e) => {
+                    <input name="color" type="text" id="color" value={car.culoare} onChange={(e) => {
                          e.preventDefault();
                         setCuloare(e.target.value);
                     }
@@ -133,9 +138,9 @@ const UpdateCar = () => {
                 </p>
                 <p>
                     <label htmlFor="year">Anul</label>
-                    <input name="year" type="text" id="year" value={anul} onChange={(e) => {
+                    <input name="year" type="text" id="year" value={car.an} onChange={(e) => {
                          e.preventDefault();
-                        setAnul(+e.target.value);
+                         setAnul(+e.target.value);
                     }
 
                     } />

@@ -25,7 +25,6 @@ export const Car: React.FC<CarProps>= ({car}) => {
 
     return (
         <tr>
-            {/* <td>{car.id}</td> */}
             <td>{car.marca}</td>
             <td onClick={getId}>{car.model}</td>
             <td>{car.culoare}</td>

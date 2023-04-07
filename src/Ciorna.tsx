@@ -4,7 +4,7 @@ import ServiceCar from "./services/Api";
 
 function Ciorna() {
 
-  const [val,setVal]=useState(0);//initializam variabila
+  const [val,setVal]=useState(0);
 
 
 
