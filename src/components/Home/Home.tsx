@@ -40,7 +40,6 @@ const Home: React.FC = () => {
             <table>
                 <thead>
                     <tr>
-                        {/* <th>Id</th> */}
                         <th>Marca</th>
                         <th>Model</th>
                         <th>Culoare</th>

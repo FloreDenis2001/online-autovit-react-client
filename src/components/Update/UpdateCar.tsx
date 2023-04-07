@@ -14,7 +14,8 @@ const UpdateCar = () => {
 
     const [marca, setMarca] = useState("");
     const [culoare, setCuloare] = useState("");
-    const [anul, setAnul] = useState(0);
+    const [anul, setAnul] = useState(1864);
+    const [model,setModel]=useState("");
 
     let { id } = useParams();
 
@@ -52,17 +53,15 @@ const UpdateCar = () => {
     useEffect(() => {
         checkErros();
 
-        let masina : Masina = {
-            ...car,
-            id: car.id,
+        
+
+        setCar({
+            id: id,
             marca: marca !== '' ? marca : undefined,
             culoare: culoare !== '' ? culoare : undefined,
             an: anul !== 0 ? anul : undefined,
-            model: car.model
-        };
-     
-
-        setCar(masina);
+            model:model
+        });
         
         console.table(car);
 
@@ -103,10 +102,28 @@ const UpdateCar = () => {
     let findById = async () => {
 
         if (id) {
-            let findByIdCar = await serviceCar.findCarById(id);
-            console.log(findByIdCar);
-            setCar(findByIdCar);
+           
+            try{
+
+                let findByIdCar = await serviceCar.findCarById(id);
+                console.log(findByIdCar)
+                setAnul(findByIdCar!.an);
+                setCuloare(findByIdCar!.culoare);
+                setMarca(findByIdCar!.marca);
+                setModel(findByIdCar!.model);
+    
+
+            }catch(eroare){
+            
+                const message = (eroare as Error).message;
+                errorNotification(message,message,"bottomLeft");
+
+                           
+            }
+
+
         }
+
 
     }
 
@@ -120,7 +137,7 @@ const UpdateCar = () => {
             <form>
                 <p>
                     <label htmlFor="marca">Marca</label>
-                    <input name="marca" type="text" id="marca" value={car.marca} onChange={(e) => {
+                    <input name="marca" type="text" id="marca" value={marca} onChange={(e) => {
                         e.preventDefault();
                         setMarca(e.target.value);
                     }
@@ -129,7 +146,7 @@ const UpdateCar = () => {
                 </p>
                 <p>
                     <label htmlFor="color">Culoare</label>
-                    <input name="color" type="text" id="color" value={car.culoare} onChange={(e) => {
+                    <input name="color" type="text" id="color" value={culoare} onChange={(e) => {
                          e.preventDefault();
                         setCuloare(e.target.value);
                     }
@@ -138,7 +155,7 @@ const UpdateCar = () => {
                 </p>
                 <p>
                     <label htmlFor="year">Anul</label>
-                    <input name="year" type="text" id="year" value={car.an} onChange={(e) => {
+                    <input name="year" type="text" id="year" value={anul} onChange={(e) => {
                          e.preventDefault();
                          setAnul(+e.target.value);
                     }
